@@ -11,8 +11,26 @@ export default function NewsCard({ article }) {
     });
   };
 
+  // Make entire card clickable if there's a valid URL
+  const handleCardClick = () => {
+    if (article.url && article.url !== '#') {
+      window.open(article.url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+    <div 
+      className={`bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow ${article.url && article.url !== '#' ? 'cursor-pointer' : ''}`}
+      onClick={handleCardClick}
+      role={article.url && article.url !== '#' ? 'button' : undefined}
+      tabIndex={article.url && article.url !== '#' ? 0 : undefined}
+      onKeyDown={(e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && article.url && article.url !== '#') {
+          e.preventDefault();
+          handleCardClick();
+        }
+      }}
+    >
       {/* News image */}
       <div className="w-full h-48 sm:h-56 md:h-48 bg-gray-200 relative overflow-hidden">
         {(() => {
@@ -73,15 +91,21 @@ export default function NewsCard({ article }) {
           <span className="font-medium">{article.source?.name || 'Unknown Source'}</span>
           <span>{formatDate(article.publishedAt)}</span>
         </div>
-        {article.url && article.url !== '#' && (
+        {/* Always show Read More link - opens article URL or shows message if unavailable */}
+        {article.url && article.url !== '#' ? (
           <a
             href={article.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-block text-blue-600 hover:text-blue-800 font-semibold text-sm sm:text-base"
+            className="mt-4 inline-block text-blue-600 hover:text-blue-800 font-semibold text-sm sm:text-base transition-colors"
+            onClick={(e) => e.stopPropagation()}
           >
-            Read More →
+            Read Full Story →
           </a>
+        ) : (
+          <span className="mt-4 inline-block text-gray-400 text-sm sm:text-base italic">
+            Full story link unavailable
+          </span>
         )}
       </div>
     </div>

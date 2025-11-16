@@ -65,12 +65,12 @@ export default function Home() {
           </div>
         )}
 
-        {/* News grid - optimized for top 3 articles */}
+        {/* News grid - displaying top 6 articles */}
         {!loading && !error && (
           <>
             {news.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {news.slice(0, 3).map((article, index) => (
+                {news.slice(0, 6).map((article, index) => (
                   <NewsCard key={index} article={article} />
                 ))}
               </div>

@@ -10,7 +10,7 @@ const mockNewsData = [
   {
     title: "Breaking: Major Policy Changes Announced",
     description: "Government officials have announced significant policy changes affecting multiple sectors.",
-    url: "#",
+    url: "https://www.bbc.com/news", // Example news source
     urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
     source: { name: "Byline News" }
@@ -18,7 +18,7 @@ const mockNewsData = [
   {
     title: "Technology Sector Sees Record Growth",
     description: "The technology sector has experienced unprecedented growth this quarter, analysts report.",
-    url: "#",
+    url: "https://www.techcrunch.com", // Example news source
     urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
     source: { name: "Byline News" }
@@ -26,7 +26,7 @@ const mockNewsData = [
   {
     title: "Climate Summit Reaches Historic Agreement",
     description: "World leaders have reached a historic agreement on climate action at the international summit.",
-    url: "#",
+    url: "https://www.reuters.com", // Example news source
     urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
     source: { name: "Byline News" }
@@ -34,7 +34,7 @@ const mockNewsData = [
   {
     title: "Sports: Championship Finals This Weekend",
     description: "The highly anticipated championship finals are set to take place this weekend.",
-    url: "#",
+    url: "https://www.espn.com", // Example news source
     urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
     source: { name: "Byline News" }
@@ -42,7 +42,7 @@ const mockNewsData = [
   {
     title: "Healthcare Innovation Breakthrough",
     description: "Researchers announce a major breakthrough in healthcare technology that could save millions of lives.",
-    url: "#",
+    url: "https://www.nature.com", // Example news source
     urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
     source: { name: "Byline News" }
@@ -50,7 +50,7 @@ const mockNewsData = [
   {
     title: "Economic Forecast Shows Positive Trends",
     description: "Latest economic forecasts indicate positive trends for the upcoming fiscal year.",
-    url: "#",
+    url: "https://www.bloomberg.com", // Example news source
     urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
     source: { name: "Byline News" }
@@ -65,11 +65,11 @@ router.get('/', async (req, res) => {
     // If API key is available, try to fetch from NewsAPI.org
     if (apiKey) {
       try {
-        // Fetch top headlines from NewsAPI.org - limit to 3 for performance
+        // Fetch top headlines from NewsAPI.org - limit to 6 articles
         const response = await axios.get('https://newsapi.org/v2/top-headlines', {
           params: {
             country: 'us',
-            pageSize: 3, // Reduced to top 3 articles
+            pageSize: 6, // Top 6 articles
             apiKey: apiKey
           },
           timeout: 5000 // 5 second timeout
@@ -79,7 +79,7 @@ router.get('/', async (req, res) => {
         if (response.data && response.data.articles) {
           const filteredArticles = response.data.articles
             .filter(article => article.title && article.description)
-            .slice(0, 3) // Ensure only 3 articles
+            .slice(0, 6) // Ensure only 6 articles
             .map(article => ({
               ...article,
               // Ensure image URL is valid, set to null if not (will use CSS placeholder)
@@ -99,16 +99,16 @@ router.get('/', async (req, res) => {
       }
     }
 
-    // Return mock data (either API key not set or API failed) - limit to top 3
+    // Return mock data (either API key not set or API failed) - limit to top 6
     res.json({
-      articles: mockNewsData.slice(0, 3), // Only return top 3
+      articles: mockNewsData.slice(0, 6), // Only return top 6
       source: 'mock'
     });
   } catch (error) {
     console.error('News fetch error:', error);
-    // Return mock data on any error - limit to top 3
+    // Return mock data on any error - limit to top 6
     res.json({
-      articles: mockNewsData.slice(0, 3), // Only return top 3
+      articles: mockNewsData.slice(0, 6), // Only return top 6
       source: 'mock'
     });
   }
