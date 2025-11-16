@@ -7,6 +7,7 @@ import authRoutes from './routes/auth.js';
 import newsRoutes from './routes/news.js';
 import submissionsRoutes from './routes/submissions.js';
 import adminRoutes from './routes/admin.js';
+import imageProxyRoutes from './routes/imageProxy.js';
 
 // Load environment variables
 dotenv.config();
@@ -16,7 +17,10 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Initialize database (creates default admin if needed)
-db.init();
+// Note: init() is async but we don't await it - it runs in background
+db.init().catch(err => {
+  console.error('Database initialization error:', err);
+});
 
 // Middleware setup
 // CORS configuration - allow frontend origin in production
@@ -75,6 +79,7 @@ app.use('/api/auth', authRoutes); // Authentication routes
 app.use('/api/news', newsRoutes); // News routes
 app.use('/api/submissions', submissionsRoutes); // Submission routes
 app.use('/api/admin', adminRoutes); // Admin routes
+app.use('/api/image-proxy', imageProxyRoutes); // Image proxy to bypass CORS
 
 // Error handling middleware
 app.use((err, req, res, next) => {

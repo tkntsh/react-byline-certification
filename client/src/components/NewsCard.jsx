@@ -1,4 +1,6 @@
 // News card component - displays individual news article
+import { useMemo } from 'react';
+
 export default function NewsCard({ article }) {
   // Format date for display
   const formatDate = (dateString) => {
@@ -11,12 +13,30 @@ export default function NewsCard({ article }) {
     });
   };
 
+  // Get API base URL for image proxy (same logic as api.js)
+  const getApiBaseUrl = () => {
+    if (import.meta.env.VITE_API_URL) {
+      const url = import.meta.env.VITE_API_URL;
+      return url.endsWith('/api') ? url : `${url}/api`;
+    }
+    return '/api';
+  };
+
   // Make entire card clickable if there's a valid URL
   const handleCardClick = () => {
     if (article.url && article.url !== '#') {
       window.open(article.url, '_blank', 'noopener,noreferrer');
     }
   };
+
+  // Generate image proxy URL
+  const imageProxyUrl = useMemo(() => {
+    if (article.urlToImage && article.urlToImage.startsWith('http') && !article.urlToImage.includes('placeholder')) {
+      const apiBase = getApiBaseUrl();
+      return `${apiBase}/image-proxy/${encodeURIComponent(article.urlToImage)}`;
+    }
+    return null;
+  }, [article.urlToImage]);
 
   return (
     <div 
@@ -38,11 +58,12 @@ export default function NewsCard({ article }) {
                                 article.urlToImage.startsWith('http') && 
                                 !article.urlToImage.includes('placeholder');
           
-          if (hasValidImage) {
+          if (hasValidImage && imageProxyUrl) {
+            // Use image proxy to bypass CORS issues
             return (
               <>
                 <img
-                  src={article.urlToImage}
+                  src={imageProxyUrl}
                   alt={article.title}
                   className="w-full h-full object-cover"
                   loading="lazy"

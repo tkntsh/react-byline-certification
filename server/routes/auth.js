@@ -18,7 +18,7 @@ router.post('/register', async (req, res) => {
     }
 
     // Check if user already exists
-    const existingUser = db.users.findByEmail(email);
+    const existingUser = await db.users.findByEmail(email);
     if (existingUser) {
       return res.status(400).json({ error: 'User already exists' });
     }
@@ -27,7 +27,7 @@ router.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create new user in database
-    const newUser = db.users.create({
+    const newUser = await db.users.create({
       email,
       password: hashedPassword,
       name,
@@ -63,7 +63,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Find user by email
-    const user = db.users.findByEmail(email);
+    const user = await db.users.findByEmail(email);
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
@@ -98,10 +98,10 @@ router.post('/login', async (req, res) => {
 });
 
 // Get current user endpoint (protected route)
-router.get('/me', authenticateToken, (req, res) => {
+router.get('/me', authenticateToken, async (req, res) => {
   try {
     // Fetch full user details from database
-    const user = db.users.findById(req.user.id);
+    const user = await db.users.findById(req.user.id);
     
     if (!user) {
       return res.status(404).json({ error: 'User not found' });

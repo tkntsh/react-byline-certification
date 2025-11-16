@@ -6,14 +6,14 @@ import { requireAdmin } from '../middleware/auth.js';
 const router = express.Router();
 
 // Get all submissions (admin only)
-router.get('/submissions', requireAdmin, (req, res) => {
+router.get('/submissions', requireAdmin, async (req, res) => {
   try {
     // Fetch all submissions
-    const allSubmissions = db.submissions.findAll();
+    const allSubmissions = await db.submissions.findAll();
     
     // Add user and reviewer information to each submission
-    const submissions = allSubmissions.map(submission => {
-      const user = db.users.findById(submission.userId);
+    const submissions = await Promise.all(allSubmissions.map(async (submission) => {
+      const user = await db.users.findById(submission.userId);
       const submissionWithUser = {
         ...submission,
         userName: user ? user.name : 'Unknown',
@@ -22,14 +22,14 @@ router.get('/submissions', requireAdmin, (req, res) => {
 
       // Add reviewer name if reviewed
       if (submission.reviewedBy) {
-        const reviewer = db.users.findById(submission.reviewedBy);
+        const reviewer = await db.users.findById(submission.reviewedBy);
         if (reviewer) {
           submissionWithUser.reviewerName = reviewer.name;
         }
       }
 
       return submissionWithUser;
-    });
+    }));
 
     // Sort by submitted date (newest first)
     submissions.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
@@ -42,10 +42,10 @@ router.get('/submissions', requireAdmin, (req, res) => {
 });
 
 // Get all users (admin only)
-router.get('/users', requireAdmin, (req, res) => {
+router.get('/users', requireAdmin, async (req, res) => {
   try {
     // Fetch all users (passwords are already excluded in findAll)
-    const users = db.users.findAll();
+    const users = await db.users.findAll();
 
     // Sort by creation date (newest first)
     users.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -58,21 +58,21 @@ router.get('/users', requireAdmin, (req, res) => {
 });
 
 // Get statistics (admin only)
-router.get('/stats', requireAdmin, (req, res) => {
+router.get('/stats', requireAdmin, async (req, res) => {
   try {
     // Get total users count
-    const allUsers = db.users.findAll();
+    const allUsers = await db.users.findAll();
     const totalUsers = allUsers.length;
     
     // Get total submissions count
-    const allSubmissions = db.submissions.findAll();
+    const allSubmissions = await db.submissions.findAll();
     const totalSubmissions = allSubmissions.length;
     
     // Get pending submissions count
-    const pendingSubmissions = db.submissions.countByStatus('pending');
+    const pendingSubmissions = await db.submissions.countByStatus('pending');
     
     // Get approved submissions count (assuming score >= 70 is passing)
-    const approvedSubmissions = db.submissions.countByScore(70);
+    const approvedSubmissions = await db.submissions.countByScore(70);
 
     res.json({
       stats: {

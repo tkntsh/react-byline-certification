@@ -5,55 +5,55 @@ import axios from 'axios';
 const router = express.Router();
 
 // Mock news data - used as fallback when API is unavailable
-// Note: urlToImage is null to use CSS-based placeholders (no external requests)
+// Uses real publisher names matching the URLs - only images are placeholders
 const mockNewsData = [
   {
     title: "Breaking: Major Policy Changes Announced",
     description: "Government officials have announced significant policy changes affecting multiple sectors.",
-    url: "https://www.bbc.com/news", // Example news source
+    url: "https://www.bbc.com/news",
     urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
-    source: { name: "Byline News" }
+    source: { name: "BBC News" }
   },
   {
     title: "Technology Sector Sees Record Growth",
     description: "The technology sector has experienced unprecedented growth this quarter, analysts report.",
-    url: "https://www.techcrunch.com", // Example news source
+    url: "https://www.techcrunch.com",
     urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
-    source: { name: "Byline News" }
+    source: { name: "TechCrunch" }
   },
   {
     title: "Climate Summit Reaches Historic Agreement",
     description: "World leaders have reached a historic agreement on climate action at the international summit.",
-    url: "https://www.reuters.com", // Example news source
+    url: "https://www.reuters.com",
     urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
-    source: { name: "Byline News" }
+    source: { name: "Reuters" }
   },
   {
     title: "Sports: Championship Finals This Weekend",
     description: "The highly anticipated championship finals are set to take place this weekend.",
-    url: "https://www.espn.com", // Example news source
+    url: "https://www.espn.com",
     urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
-    source: { name: "Byline News" }
+    source: { name: "ESPN" }
   },
   {
     title: "Healthcare Innovation Breakthrough",
     description: "Researchers announce a major breakthrough in healthcare technology that could save millions of lives.",
-    url: "https://www.nature.com", // Example news source
+    url: "https://www.nature.com",
     urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
-    source: { name: "Byline News" }
+    source: { name: "Nature" }
   },
   {
     title: "Economic Forecast Shows Positive Trends",
     description: "Latest economic forecasts indicate positive trends for the upcoming fiscal year.",
-    url: "https://www.bloomberg.com", // Example news source
+    url: "https://www.bloomberg.com",
     urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
-    source: { name: "Byline News" }
+    source: { name: "Bloomberg" }
   }
 ];
 

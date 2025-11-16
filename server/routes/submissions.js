@@ -6,7 +6,7 @@ import { authenticateToken, requireAdmin } from '../middleware/auth.js';
 const router = express.Router();
 
 // Create new submission (authenticated users only)
-router.post('/', authenticateToken, (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
   try {
     const { title, content } = req.body;
     const userId = req.user.id;
@@ -17,7 +17,7 @@ router.post('/', authenticateToken, (req, res) => {
     }
 
     // Create submission in database
-    const submission = db.submissions.create({
+    const submission = await db.submissions.create({
       userId,
       title,
       content,
@@ -35,21 +35,21 @@ router.post('/', authenticateToken, (req, res) => {
 });
 
 // Get user's own submissions (authenticated users only)
-router.get('/', authenticateToken, (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
 
     // Fetch all submissions for the current user
-    const userSubmissions = db.submissions.findByUserId(userId);
+    const userSubmissions = await db.submissions.findByUserId(userId);
     
     // Add user name to each submission
-    const submissions = userSubmissions.map(submission => {
-      const user = db.users.findById(submission.userId);
+    const submissions = await Promise.all(userSubmissions.map(async (submission) => {
+      const user = await db.users.findById(submission.userId);
       return {
         ...submission,
         userName: user ? user.name : 'Unknown'
       };
-    });
+    }));
 
     // Sort by submitted date (newest first)
     submissions.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
@@ -62,14 +62,14 @@ router.get('/', authenticateToken, (req, res) => {
 });
 
 // Get single submission by ID (authenticated users can see their own, admins can see all)
-router.get('/:id', authenticateToken, (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const submissionId = req.params.id;
     const userId = req.user.id;
     const isAdmin = req.user.isAdmin;
 
     // Fetch submission from database
-    const submission = db.submissions.findById(submissionId);
+    const submission = await db.submissions.findById(submissionId);
 
     if (!submission) {
       return res.status(404).json({ error: 'Submission not found' });
@@ -81,7 +81,7 @@ router.get('/:id', authenticateToken, (req, res) => {
     }
 
     // Add user information to submission
-    const user = db.users.findById(submission.userId);
+    const user = await db.users.findById(submission.userId);
     const submissionWithUser = {
       ...submission,
       userName: user ? user.name : 'Unknown',
@@ -90,7 +90,7 @@ router.get('/:id', authenticateToken, (req, res) => {
 
     // Add reviewer name if reviewed
     if (submission.reviewedBy) {
-      const reviewer = db.users.findById(submission.reviewedBy);
+      const reviewer = await db.users.findById(submission.reviewedBy);
       if (reviewer) {
         submissionWithUser.reviewerName = reviewer.name;
       }
@@ -104,7 +104,7 @@ router.get('/:id', authenticateToken, (req, res) => {
 });
 
 // Update submission (admin only - for marking/reviewing)
-router.put('/:id', requireAdmin, (req, res) => {
+router.put('/:id', requireAdmin, async (req, res) => {
   try {
     const submissionId = req.params.id;
     const { status, score, feedback } = req.body;
@@ -116,13 +116,13 @@ router.put('/:id', requireAdmin, (req, res) => {
     }
 
     // Check if submission exists
-    const existing = db.submissions.findById(submissionId);
+    const existing = await db.submissions.findById(submissionId);
     if (!existing) {
       return res.status(404).json({ error: 'Submission not found' });
     }
 
     // Update submission with review details
-    const updatedSubmission = db.submissions.update(submissionId, {
+    const updatedSubmission = await db.submissions.update(submissionId, {
       status,
       score: parseInt(score),
       feedback: feedback || '',
@@ -130,7 +130,7 @@ router.put('/:id', requireAdmin, (req, res) => {
     });
 
     // Add user information to response
-    const user = db.users.findById(updatedSubmission.userId);
+    const user = await db.users.findById(updatedSubmission.userId);
     const submissionWithUser = {
       ...updatedSubmission,
       userName: user ? user.name : 'Unknown',
@@ -138,7 +138,7 @@ router.put('/:id', requireAdmin, (req, res) => {
     };
 
     // Add reviewer name
-    const reviewer = db.users.findById(reviewerId);
+    const reviewer = await db.users.findById(reviewerId);
     if (reviewer) {
       submissionWithUser.reviewerName = reviewer.name;
     }
