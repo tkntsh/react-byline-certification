@@ -5,12 +5,13 @@ import axios from 'axios';
 const router = express.Router();
 
 // Mock news data - used as fallback when API is unavailable
+// Note: urlToImage is null to use CSS-based placeholders (no external requests)
 const mockNewsData = [
   {
     title: "Breaking: Major Policy Changes Announced",
     description: "Government officials have announced significant policy changes affecting multiple sectors.",
     url: "#",
-    urlToImage: "https://via.placeholder.com/400x250?text=News+1",
+    urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
     source: { name: "Byline News" }
   },
@@ -18,7 +19,7 @@ const mockNewsData = [
     title: "Technology Sector Sees Record Growth",
     description: "The technology sector has experienced unprecedented growth this quarter, analysts report.",
     url: "#",
-    urlToImage: "https://via.placeholder.com/400x250?text=News+2",
+    urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
     source: { name: "Byline News" }
   },
@@ -26,7 +27,7 @@ const mockNewsData = [
     title: "Climate Summit Reaches Historic Agreement",
     description: "World leaders have reached a historic agreement on climate action at the international summit.",
     url: "#",
-    urlToImage: "https://via.placeholder.com/400x250?text=News+3",
+    urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
     source: { name: "Byline News" }
   },
@@ -34,7 +35,7 @@ const mockNewsData = [
     title: "Sports: Championship Finals This Weekend",
     description: "The highly anticipated championship finals are set to take place this weekend.",
     url: "#",
-    urlToImage: "https://via.placeholder.com/400x250?text=News+4",
+    urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
     source: { name: "Byline News" }
   },
@@ -42,7 +43,7 @@ const mockNewsData = [
     title: "Healthcare Innovation Breakthrough",
     description: "Researchers announce a major breakthrough in healthcare technology that could save millions of lives.",
     url: "#",
-    urlToImage: "https://via.placeholder.com/400x250?text=News+5",
+    urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
     source: { name: "Byline News" }
   },
@@ -50,7 +51,7 @@ const mockNewsData = [
     title: "Economic Forecast Shows Positive Trends",
     description: "Latest economic forecasts indicate positive trends for the upcoming fiscal year.",
     url: "#",
-    urlToImage: "https://via.placeholder.com/400x250?text=News+6",
+    urlToImage: null, // Use CSS placeholder instead of external service
     publishedAt: new Date().toISOString(),
     source: { name: "Byline News" }
   }
@@ -81,10 +82,10 @@ router.get('/', async (req, res) => {
             .slice(0, 3) // Ensure only 3 articles
             .map(article => ({
               ...article,
-              // Ensure image URL is valid, use placeholder if not
-              urlToImage: article.urlToImage && article.urlToImage.startsWith('http') 
+              // Ensure image URL is valid, set to null if not (will use CSS placeholder)
+              urlToImage: article.urlToImage && article.urlToImage.startsWith('http') && !article.urlToImage.includes('placeholder')
                 ? article.urlToImage 
-                : `https://via.placeholder.com/800x450?text=${encodeURIComponent(article.title.substring(0, 20))}`
+                : null // Use CSS placeholder instead of external service
             }));
           
           return res.json({

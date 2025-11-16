@@ -15,25 +15,50 @@ export default function NewsCard({ article }) {
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       {/* News image */}
       <div className="w-full h-48 sm:h-56 md:h-48 bg-gray-200 relative overflow-hidden">
-        {article.urlToImage ? (
-          <img
-            src={article.urlToImage}
-            alt={article.title}
-            className="w-full h-full object-cover"
-            loading="lazy"
-            onError={(e) => {
-              // Fallback image if loading fails
-              e.target.src = `https://via.placeholder.com/800x450?text=${encodeURIComponent(article.title.substring(0, 30))}`;
-              e.target.onerror = null; // Prevent infinite loop
-            }}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600">
-            <span className="text-white text-center px-4 text-sm sm:text-base font-semibold">
-              {article.title.substring(0, 50)}
-            </span>
-          </div>
-        )}
+        {(() => {
+          const hasValidImage = article.urlToImage && 
+                                article.urlToImage.startsWith('http') && 
+                                !article.urlToImage.includes('placeholder');
+          
+          if (hasValidImage) {
+            return (
+              <>
+                <img
+                  src={article.urlToImage}
+                  alt={article.title}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  onError={(e) => {
+                    // If image fails to load, hide img and show CSS placeholder
+                    e.target.style.display = 'none';
+                    const placeholder = e.target.parentElement?.querySelector('.image-placeholder');
+                    if (placeholder) {
+                      placeholder.style.display = 'flex';
+                    }
+                  }}
+                />
+                {/* CSS placeholder - hidden by default, shown if image fails */}
+                <div 
+                  className="image-placeholder w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600 absolute top-0 left-0"
+                  style={{ display: 'none' }}
+                >
+                  <span className="text-white text-center px-4 text-sm sm:text-base font-semibold">
+                    {article.title.substring(0, 50)}
+                  </span>
+                </div>
+              </>
+            );
+          } else {
+            // No image URL - show CSS placeholder directly
+            return (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600">
+                <span className="text-white text-center px-4 text-sm sm:text-base font-semibold">
+                  {article.title.substring(0, 50)}
+                </span>
+              </div>
+            );
+          }
+        })()}
       </div>
       
       {/* News content */}
