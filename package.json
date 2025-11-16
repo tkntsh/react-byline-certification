@@ -8,7 +8,8 @@
     "server": "node server/index.js",
     "client": "cd client && npm run dev",
     "install-all": "npm install && cd client && npm install",
-    "build": "cd client && npm run build"
+    "build": "echo 'Skipping frontend build - backend only deployment'",
+    "postinstall": "echo 'Installing dependencies...'"
   },
   "keywords": ["byline", "certification", "news", "journalism"],
   "author": "",
