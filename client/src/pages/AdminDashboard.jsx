@@ -110,28 +110,28 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="container mx-auto px-4 max-w-7xl">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">Admin Dashboard</h1>
+    <div className="min-h-screen bg-gray-50 py-6 sm:py-8 md:py-12">
+      <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 sm:mb-8">Admin Dashboard</h1>
 
         {/* Statistics cards */}
         {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-sm font-medium text-gray-500 mb-2">Total Users</h3>
-              <p className="text-3xl font-bold text-blue-600">{stats.totalUsers}</p>
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+              <h3 className="text-xs sm:text-sm font-medium text-gray-500 mb-2">Total Users</h3>
+              <p className="text-2xl sm:text-3xl font-bold text-blue-600">{stats.totalUsers}</p>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-sm font-medium text-gray-500 mb-2">Total Submissions</h3>
-              <p className="text-3xl font-bold text-green-600">{stats.totalSubmissions}</p>
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+              <h3 className="text-xs sm:text-sm font-medium text-gray-500 mb-2">Total Submissions</h3>
+              <p className="text-2xl sm:text-3xl font-bold text-green-600">{stats.totalSubmissions}</p>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-sm font-medium text-gray-500 mb-2">Pending Reviews</h3>
-              <p className="text-3xl font-bold text-yellow-600">{stats.pendingSubmissions}</p>
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+              <h3 className="text-xs sm:text-sm font-medium text-gray-500 mb-2">Pending Reviews</h3>
+              <p className="text-2xl sm:text-3xl font-bold text-yellow-600">{stats.pendingSubmissions}</p>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-sm font-medium text-gray-500 mb-2">Approved</h3>
-              <p className="text-3xl font-bold text-purple-600">{stats.approvedSubmissions}</p>
+            <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
+              <h3 className="text-xs sm:text-sm font-medium text-gray-500 mb-2">Approved</h3>
+              <p className="text-2xl sm:text-3xl font-bold text-purple-600">{stats.approvedSubmissions}</p>
             </div>
           </div>
         )}
@@ -148,26 +148,26 @@ export default function AdminDashboard() {
               <p className="mt-4 text-gray-600">Loading submissions...</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
+            <div className="overflow-x-auto -mx-4 sm:mx-0">
+              <table className="w-full min-w-[640px]">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Title
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                       User
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                       Score
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
                       Submitted
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
@@ -175,17 +175,20 @@ export default function AdminDashboard() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {submissions.map((submission) => (
                     <tr key={submission.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
-                          {submission.title.substring(0, 50)}
-                          {submission.title.length > 50 ? '...' : ''}
+                      <td className="px-3 sm:px-6 py-4">
+                        <div className="text-xs sm:text-sm font-medium text-gray-900">
+                          <span className="sm:hidden">{submission.title.substring(0, 30)}{submission.title.length > 30 ? '...' : ''}</span>
+                          <span className="hidden sm:inline">{submission.title.substring(0, 50)}{submission.title.length > 50 ? '...' : ''}</span>
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1 sm:hidden">
+                          {submission.userName} • {submission.score !== null ? `${submission.score}/100` : 'No score'}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden sm:table-cell">
                         <div className="text-sm text-gray-900">{submission.userName}</div>
-                        <div className="text-sm text-gray-500">{submission.userEmail}</div>
+                        <div className="text-xs text-gray-500">{submission.userEmail}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                         <span
                           className={`px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(
                             submission.status
@@ -194,16 +197,16 @@ export default function AdminDashboard() {
                           {submission.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
                         {submission.score !== null ? `${submission.score}/100` : '-'}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 hidden lg:table-cell">
                         {formatDate(submission.submittedAt)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button
                           onClick={() => handleReview(submission)}
-                          className="text-blue-600 hover:text-blue-900"
+                          className="text-blue-600 hover:text-blue-900 text-xs sm:text-sm"
                         >
                           Review
                         </button>
@@ -220,7 +223,7 @@ export default function AdminDashboard() {
         {selectedSubmission && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <h2 className="text-2xl font-bold text-gray-800 mb-4">Review Submission</h2>
                 
                 {/* Submission details */}

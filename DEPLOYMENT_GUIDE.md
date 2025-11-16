@@ -163,7 +163,12 @@ Railway will auto-detect the project, but you need to configure it:
 1. **Set Root Directory** (if needed):
    - In project settings, set root directory to project root (not needed if deploying from root)
 
-2. **Configure Start Command**:
+2. **Build Command** (Optional):
+   - Railway will run `npm run build` automatically
+   - The build script is configured to skip frontend build (backend-only deployment)
+   - You can also set Build Command to: `echo 'Backend only - skipping build'` or leave it as default
+
+3. **Configure Start Command**:
    - In the service settings, set start command:
    ```
    npm run server

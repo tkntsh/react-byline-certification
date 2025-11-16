@@ -54,13 +54,13 @@ export default function Submissions() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="container mx-auto px-4 max-w-6xl">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">My Submissions</h1>
+    <div className="min-h-screen bg-gray-50 py-6 sm:py-8 md:py-12">
+      <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">My Submissions</h1>
           <Link
             to="/submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition"
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 rounded-md transition text-center text-sm sm:text-base"
           >
             + New Submission
           </Link>
@@ -89,24 +89,35 @@ export default function Submissions() {
                 {submissions.map((submission) => (
                   <div
                     key={submission.id}
-                    className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition"
+                    className="bg-white rounded-lg shadow-md p-4 sm:p-6 hover:shadow-lg transition"
                   >
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="flex-1">
-                        <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                          {submission.title}
-                        </h3>
-                        <p className="text-gray-600 line-clamp-2 mb-4">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-start gap-4 mb-4">
+                      <div className="flex-1 w-full">
+                        <div className="flex justify-between items-start gap-2 mb-2">
+                          <h3 className="text-lg sm:text-xl font-semibold text-gray-800 flex-1">
+                            {submission.title}
+                          </h3>
+                          <div className="sm:hidden">
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusBadge(
+                                submission.status
+                              )}`}
+                            >
+                              {submission.status.charAt(0).toUpperCase() + submission.status.slice(1).replace('_', ' ')}
+                            </span>
+                          </div>
+                        </div>
+                        <p className="text-sm sm:text-base text-gray-600 line-clamp-2 mb-3 sm:mb-4">
                           {submission.content}
                         </p>
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:space-x-4 text-xs sm:text-sm text-gray-500">
                           <span>Submitted: {formatDate(submission.submittedAt)}</span>
                           {submission.reviewedAt && (
                             <span>Reviewed: {formatDate(submission.reviewedAt)}</span>
                           )}
                         </div>
                       </div>
-                      <div className="ml-4">
+                      <div className="hidden sm:block ml-4">
                         <span
                           className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusBadge(
                             submission.status
@@ -120,15 +131,15 @@ export default function Submissions() {
                     {/* Score and feedback display */}
                     {submission.score !== null && (
                       <div className="mt-4 pt-4 border-t border-gray-200">
-                        <div className="flex items-center space-x-4 mb-2">
-                          <span className="text-lg font-semibold text-gray-700">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:space-x-4 mb-2">
+                          <span className="text-base sm:text-lg font-semibold text-gray-700">
                             Score: <span className="text-blue-600">{submission.score}/100</span>
                           </span>
                           {submission.score >= 70 && (
-                            <span className="text-green-600 font-semibold">✓ Certification Eligible</span>
+                            <span className="text-green-600 font-semibold text-sm sm:text-base">✓ Certification Eligible</span>
                           )}
                           {submission.score < 70 && (
-                            <span className="text-orange-600 font-semibold">Needs Improvement</span>
+                            <span className="text-orange-600 font-semibold text-sm sm:text-base">Needs Improvement</span>
                           )}
                         </div>
                         {submission.feedback && (

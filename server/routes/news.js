@@ -64,20 +64,31 @@ router.get('/', async (req, res) => {
     // If API key is available, try to fetch from NewsAPI.org
     if (apiKey) {
       try {
-        // Fetch top headlines from NewsAPI.org
+        // Fetch top headlines from NewsAPI.org - limit to 3 for performance
         const response = await axios.get('https://newsapi.org/v2/top-headlines', {
           params: {
             country: 'us',
-            pageSize: 20,
+            pageSize: 3, // Reduced to top 3 articles
             apiKey: apiKey
           },
           timeout: 5000 // 5 second timeout
         });
 
-        // Return API data if successful
+        // Return API data if successful - filter and ensure images work
         if (response.data && response.data.articles) {
+          const filteredArticles = response.data.articles
+            .filter(article => article.title && article.description)
+            .slice(0, 3) // Ensure only 3 articles
+            .map(article => ({
+              ...article,
+              // Ensure image URL is valid, use placeholder if not
+              urlToImage: article.urlToImage && article.urlToImage.startsWith('http') 
+                ? article.urlToImage 
+                : `https://via.placeholder.com/800x450?text=${encodeURIComponent(article.title.substring(0, 20))}`
+            }));
+          
           return res.json({
-            articles: response.data.articles.filter(article => article.title && article.description),
+            articles: filteredArticles,
             source: 'api'
           });
         }
@@ -87,16 +98,16 @@ router.get('/', async (req, res) => {
       }
     }
 
-    // Return mock data (either API key not set or API failed)
+    // Return mock data (either API key not set or API failed) - limit to top 3
     res.json({
-      articles: mockNewsData,
+      articles: mockNewsData.slice(0, 3), // Only return top 3
       source: 'mock'
     });
   } catch (error) {
     console.error('News fetch error:', error);
-    // Return mock data on any error
+    // Return mock data on any error - limit to top 3
     res.json({
-      articles: mockNewsData,
+      articles: mockNewsData.slice(0, 3), // Only return top 3
       source: 'mock'
     });
   }

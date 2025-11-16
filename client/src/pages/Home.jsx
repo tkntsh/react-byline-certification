@@ -32,23 +32,23 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero section */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-8 sm:py-12 md:py-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4">
             Welcome to Byline Certification
           </h1>
-          <p className="text-xl md:text-2xl mb-8">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-4 sm:mb-6 md:mb-8">
             Your platform for journalism training and certification
           </p>
-          <p className="text-lg opacity-90">
+          <p className="text-sm sm:text-base md:text-lg opacity-90">
             Submit your reports, get expert feedback, and earn your byline certification
           </p>
         </div>
       </div>
 
       {/* News section */}
-      <div className="container mx-auto px-4 py-12">
-        <h2 className="text-3xl font-bold mb-8 text-gray-800">Latest News</h2>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-12">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gray-800">Latest News</h2>
         
         {/* Loading state */}
         {loading && (
@@ -65,18 +65,18 @@ export default function Home() {
           </div>
         )}
 
-        {/* News grid */}
+        {/* News grid - optimized for top 3 articles */}
         {!loading && !error && (
           <>
             {news.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {news.map((article, index) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {news.slice(0, 3).map((article, index) => (
                   <NewsCard key={index} article={article} />
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12">
-                <p className="text-gray-600">No news articles available at the moment.</p>
+              <div className="text-center py-8 sm:py-12">
+                <p className="text-gray-600 text-sm sm:text-base">No news articles available at the moment.</p>
               </div>
             )}
           </>
