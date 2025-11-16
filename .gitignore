@@ -1,0 +1,11 @@
+node_modules/
+client/node_modules/
+.env
+.DS_Store
+*.log
+database.db
+database.json
+dist/
+client/dist/
+.vite/
+

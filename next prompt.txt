@@ -1,0 +1,3 @@
+i would like you to go through and analyse this entire project. analyse how it works, the functionalities, the project setup, package installation, configuration, everything in this project make sure to go through it.
+
+the reason i would like you to analyse this project is because i would like you to provide me with instructions on pushing this project to git as well as instructions on deploying this project (make sure to recommend the method of deployment, my default is always vercel, if not provide me with other alternatives that are tailored to this application's functionalities
