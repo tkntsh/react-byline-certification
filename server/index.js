@@ -20,12 +20,44 @@ db.init();
 
 // Middleware setup
 // CORS configuration - allow frontend origin in production
+// Supports both production and preview Vercel deployments
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production'
-    ? process.env.FRONTEND_URL 
-      ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
-      : '*' // Allow all in production if FRONTEND_URL not set (update this!)
-    : 'http://localhost:5173', // Development
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Development: allow localhost
+    if (process.env.NODE_ENV !== 'production') {
+      if (origin === 'http://localhost:5173' || origin === 'http://localhost:3000') {
+        return callback(null, true);
+      }
+    }
+    
+    // Production: check against allowed origins
+    if (process.env.NODE_ENV === 'production') {
+      // Get allowed frontend URLs from environment variable
+      const allowedOrigins = process.env.FRONTEND_URL 
+        ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
+        : [];
+      
+      // Always allow Vercel preview deployments (*.vercel.app pattern)
+      const isVercelPreview = origin.endsWith('.vercel.app');
+      
+      // Check if origin is in allowed list or is a Vercel preview
+      if (allowedOrigins.includes(origin) || isVercelPreview) {
+        return callback(null, true);
+      }
+      
+      // If no FRONTEND_URL set, allow all (not recommended for production)
+      if (allowedOrigins.length === 0) {
+        console.warn('WARNING: FRONTEND_URL not set, allowing all origins');
+        return callback(null, true);
+      }
+    }
+    
+    // Reject origin
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
